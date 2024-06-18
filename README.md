@@ -124,10 +124,6 @@ You can extend polyglot and provide your own translator drivers. To do so, follo
     Polyglot::translator('microsoft')->from('en')->to('fr')->translate('Hello!');
     ```
 
-### Astrotomic Translatable
-
-
-
 ## Testing
 
 ```bash
