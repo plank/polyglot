@@ -57,7 +57,7 @@ class TranslatorManager extends Manager implements Translator
     /**
      * {@inheritdoc}
      */
-    protected function callCustomCreator($driver, $config = null): callable
+    protected function callCustomCreator($driver, $config = null): Translator
     {
         if ($config === null) {
             throw new ValidationException('Custom driver creator requires translator configuration.');
