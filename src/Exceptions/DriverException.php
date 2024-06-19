@@ -2,6 +2,4 @@
 
 namespace Plank\Polyglot\Exceptions;
 
-class DriverException extends \Exception
-{
-}
+class DriverException extends \Exception {}

@@ -2,6 +2,4 @@
 
 namespace Plank\Polyglot\Exceptions;
 
-class ValidationException extends \InvalidArgumentException
-{
-}
+class ValidationException extends \InvalidArgumentException {}
