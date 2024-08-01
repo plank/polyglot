@@ -118,7 +118,7 @@ class TranslatorManager extends Manager implements Translator
 
     public function createStichozaDriver(array $config): StichozaTranslate
     {
-        return new StichozaTranslate();
+        return new StichozaTranslate;
     }
 
     public function createGoogleDriver(array $config): GoogleTranslate

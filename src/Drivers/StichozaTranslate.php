@@ -11,7 +11,7 @@ class StichozaTranslate extends AbstractTranslator
 
     public function __construct()
     {
-        $this->client = new GoogleTranslate();
+        $this->client = new GoogleTranslate;
     }
 
     public function translate(string $text): string
