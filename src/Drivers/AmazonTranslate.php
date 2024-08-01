@@ -24,6 +24,12 @@ class AmazonTranslate extends AbstractTranslator
 
     public function translate(string $text): string
     {
+        if (strlen($text) > 10000) {
+            $strings = str_split($text, 10000);
+
+            return implode('', $this->translateBatch($strings));
+        }
+
         $response = $this->sendTranslateRequest($text, [
             'TargetLanguageCode' => $this->target,
             'SourceLanguageCode' => $this->source,

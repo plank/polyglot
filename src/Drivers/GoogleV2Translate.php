@@ -26,6 +26,12 @@ class GoogleV2Translate extends AbstractTranslator
 
     public function translate(string $text): string
     {
+        if (strlen($text) > 102400) {
+            $strings = str_split($text, 102400);
+
+            return implode('', $this->translateBatch($strings));
+        }
+
         $response = $this->sendTranslateRequest($text, [
             'target' => $this->target,
             'source' => $this->source,

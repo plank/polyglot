@@ -14,8 +14,14 @@ class StichozaTranslate extends AbstractTranslator
         $this->client = new GoogleTranslate();
     }
 
-    public function translate(string $string): string
+    public function translate(string $text): string
     {
-        return $this->client->setSource($this->source)->setTarget($this->target)->translate($string);
+        if (strlen($text) > 15000) {
+            $strings = str_split($text, 15000);
+
+            return implode('', $this->translateBatch($strings));
+        }
+
+        return $this->client->setSource($this->source)->setTarget($this->target)->translate($text);
     }
 }
