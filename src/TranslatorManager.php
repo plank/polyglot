@@ -39,6 +39,10 @@ class TranslatorManager extends Manager implements Translator
      */
     public function createDriver($translator): AbstractTranslator|NestedTranslator
     {
+        if (Str::startsWith($translator, 'stack:')) {
+            return $this->stack(...Str::of($translator)->after('stack:')->explode(','));
+        }
+
         $config = $this->configurationFor($translator);
         $driver = $config['driver'];
 
