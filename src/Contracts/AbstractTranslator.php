@@ -15,10 +15,10 @@ abstract class AbstractTranslator implements Translator
     public function translateTo(string $string, string $target, ?string $source = null): string
     {
         if ($source !== null) {
-            $this->setSource($source);
+            $this->from($source);
         }
 
-        return $this->setTarget($target)->translate($string);
+        return $this->to($target)->translate($string);
     }
 
     public function translateBatch(array $strings): array
@@ -29,10 +29,10 @@ abstract class AbstractTranslator implements Translator
     public function translateBatchTo(array $strings, string $target, ?string $source = null): array
     {
         if ($source !== null) {
-            $this->setSource($source);
+            $this->from($source);
         }
 
-        return $this->setTarget($target)->translateBatch($strings);
+        return $this->to($target)->translateBatch($strings);
     }
 
     public function languages($target = null): array
@@ -42,34 +42,19 @@ abstract class AbstractTranslator implements Translator
 
     public function format(string $format): self
     {
-        return $this->setFormat($format);
-    }
-
-    public function to(string $locale): self
-    {
-        return $this->setTarget($locale);
-    }
-
-    public function from(?string $locale = null): self
-    {
-        return $this->setSource($locale);
-    }
-
-    public function setFormat(string $format): self
-    {
         $this->format = $format;
 
         return $this;
     }
 
-    public function setSource(?string $source = null): self
+    public function from(?string $source = null): self
     {
         $this->source = $source ?? 'auto';
 
         return $this;
     }
 
-    public function setTarget(string $target): self
+    public function to(string $target): self
     {
         $this->target = $target;
 

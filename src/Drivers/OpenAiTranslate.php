@@ -64,6 +64,28 @@ class OpenAiTranslate extends AbstractTranslator
 
     public function languages($target = null): array
     {
-        return [];
+        return $this->sendLanguagesRequest($target);
+    }
+
+    public function sendLanguagesRequest($target = null, $model = null): array
+    {
+        $prompt = 'Return a list of all the languages for which you can support translations to and from. Result must be only a JSON array with language codes in ISO-639';
+
+        if ($target === null) {
+            $prompt .= "\n\n short example: [\"en\",\"fr\"]";
+        } else {
+            $prompt .= " where the key is the language code and the value is the language name in the $target language";
+            $prompt .= "\n\n short example: {\"en\":\"English\",\"fr\":\"French\"}";
+        }
+
+        $response = $this->client->chat()->create([
+            'model' => $model ?? $this->model,
+            'response_format' => ['type' => 'json_object'],
+            'messages' => [['role' => 'user', 'content' => $prompt]],
+        ]);
+
+        $json = $response->choices[0]->message->content;
+
+        return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
     }
 }

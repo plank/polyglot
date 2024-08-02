@@ -66,6 +66,17 @@ class AmazonTranslate extends AbstractTranslator
 
     public function languages($target = null): array
     {
+        $languages = collect($this->sendLanguagesRequest($target));
+
+        if ($target === null) {
+            return $languages->pluck('LanguageCode')->toArray();
+        }
+
+        return $languages->pluck('LanguageName', 'LanguageCode')->toArray();
+    }
+
+    public function sendLanguagesRequest($target = null): array
+    {
         $response = $this->client->listLanguages($target ? ['DisplayLanguageCode' => $target] : []);
 
         return $response['Languages'];

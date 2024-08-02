@@ -58,28 +58,37 @@ class StackTranslate extends NestedTranslator
         }
     }
 
-    public function setSource(?string $source = null): self
+    public function languages($target = null): array
+    {
+        return array_reduce($this->clients, static function ($carry, $client) use ($target) {
+            $languages = $client->languages($target);
+
+            return (is_null($carry) || count($languages) < count($carry)) ? $languages : $carry;
+        });
+    }
+
+    public function format(string $format): self
     {
         foreach ($this->clients as $client) {
-            $client->setSource($source);
+            $client->format($format);
         }
 
         return $this;
     }
 
-    public function setTarget(string $target): self
+    public function from(?string $source = null): self
     {
         foreach ($this->clients as $client) {
-            $client->setTarget($target);
+            $client->from($source);
         }
 
         return $this;
     }
 
-    public function setFormat(string $format): self
+    public function to(string $target): self
     {
         foreach ($this->clients as $client) {
-            $client->setFormat($format);
+            $client->to($target);
         }
 
         return $this;

@@ -4,6 +4,9 @@ namespace Plank\Polyglot\Contracts;
 
 use Illuminate\Support\Traits\ForwardsCalls;
 
+/**
+ * @mixin Translator
+ */
 abstract class NestedTranslator implements Translator
 {
     use ForwardsCalls;
@@ -28,6 +31,32 @@ abstract class NestedTranslator implements Translator
     public function translateBatchTo(array $strings, string $target, ?string $source = null): array
     {
         return $this->client->translateBatchTo($strings, $target, $source);
+    }
+
+    public function languages($target = null): array
+    {
+        return $this->client->languages($target);
+    }
+
+    public function format(string $format): self
+    {
+        $this->client->format($format);
+
+        return $this;
+    }
+
+    public function from(?string $locale = null): self
+    {
+        $this->client->from($locale);
+
+        return $this;
+    }
+
+    public function to(string $locale): self
+    {
+        $this->client->to($locale);
+
+        return $this;
     }
 
     public function __call($method, $arguments)

@@ -77,10 +77,15 @@ class GoogleV3Translate extends AbstractTranslator
         return $this->client->translateText($request);
     }
 
+    public function languages($target = null): array
+    {
+        return $this->sendLanguagesRequest($target);
+    }
+
     /**
      * @throws ApiException
      */
-    public function languages($target = null): array
+    public function sendLanguagesRequest($target = null): array
     {
         $request = (new GetSupportedLanguagesRequest)->setParent($this->parent);
 

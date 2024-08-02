@@ -79,6 +79,17 @@ class GoogleV2Translate extends AbstractTranslator
      */
     public function languages($target = null): array
     {
+        $languages = $this->sendLanguagesRequest($target);
+
+        if ($target === null) {
+            return $languages;
+        }
+
+        return collect($languages)->pluck('name', 'code')->toArray();
+    }
+
+    public function sendLanguagesRequest($target = null): array
+    {
         if ($target !== null) {
             $options = ['target' => $target];
 

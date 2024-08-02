@@ -191,4 +191,24 @@ class TranslatorManager extends Manager implements Translator
     {
         return $this->translator()->translateBatchTo($strings, $target, $source);
     }
+
+    public function languages(?string $target = null): array
+    {
+        return $this->translator()->languages($target);
+    }
+
+    public function format(string $format): Translator
+    {
+        return $this->translator()->format($format);
+    }
+
+    public function from(?string $locale = null): Translator
+    {
+        return $this->translator()->from($locale);
+    }
+
+    public function to(string $locale): Translator
+    {
+        return $this->translator()->to($locale);
+    }
 }
