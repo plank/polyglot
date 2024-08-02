@@ -28,7 +28,7 @@ class StichozaTranslate extends AbstractTranslator
 
     public function languages($target = null): array
     {
-        $client = new Client();
+        $client = new Client;
         $menu = 'sl'; // 'tl';
         $url = "https://translate.google.com/m?mui=$menu&hl=$target";
 
@@ -37,7 +37,7 @@ class StichozaTranslate extends AbstractTranslator
         $html = preg_replace('/<head>/i', '<head><meta charset="UTF-8">', $html);
 
         // Prepare to crawl DOM
-        $dom = new \DOMDocument();
+        $dom = new \DOMDocument;
         $dom->loadHTML($html);
         $nodes = (new \DOMXPath($dom))->query('//div[@class="language-item"]/a');
 
