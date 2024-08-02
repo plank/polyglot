@@ -100,7 +100,7 @@ class TranslatorManager extends Manager implements Translator
         $config = $this->config->get('polyglot.translators.stack') ?? [];
         $config['translators'] = $translators;
 
-        return $this->drivers[$key] = $this->createStackDriver($config)->to($config['target'] ?? $this->container->getLocale());
+        return $this->drivers[$key] = $this->createStackDriver($config);
     }
 
     public function createStackDriver(array $config): StackTranslate
@@ -117,7 +117,7 @@ class TranslatorManager extends Manager implements Translator
 
         $translators = array_map(fn ($translator) => $this->translator($translator), $translators);
 
-        return new StackTranslate($translators, $config['retries'] ?? null);
+        return new StackTranslate($translators, $config['retries'] ?? 1, $config['sleep'] ?? 100);
     }
 
     public function createStichozaDriver(array $config): StichozaTranslate

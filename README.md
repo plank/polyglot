@@ -1,11 +1,11 @@
 <p align="center"><a href="https://plank.co"><img src="art/polyglot.png" width="100%"></a></p>
 
 <p align="center">
-<a href="https://packagist.org/packages/plank/polyglot"><img src="https://img.shields.io/packagist/php-v/plank/snapshots?color=%23fae370&label=php&logo=php&logoColor=%23fff" alt="PHP Version Support"></a>
+<a href="https://packagist.org/packages/plank/polyglot"><img src="https://img.shields.io/packagist/php-v/plank/polyglot?color=%23fae370&label=php&logo=php&logoColor=%23fff" alt="PHP Version Support"></a>
 <a href="https://laravel.com/docs/11.x/releases#support-policy"><img src="https://img.shields.io/badge/laravel-9.x,%2010.x,%2011.x-%2343d399?color=%23f1ede9&logo=laravel&logoColor=%23ffffff" alt="PHP Version Support"></a>
-<a href="https://github.com/plank/polyglot/actions?query=workflow%3Arun-tests"><img src="https://img.shields.io/github/actions/workflow/status/plank/snapshots/run-tests.yml?branch=main&&color=%23bfc9bd&label=run-tests&logo=github&logoColor=%23fff" alt="GitHub Workflow Tests Status"></a>
-<a href="https://codeclimate.com/github/plank/polyglot/test_coverage"><img src="https://img.shields.io/codeclimate/coverage/plank/snapshots?color=%23ff9376&label=test%20coverage&logo=code-climate&logoColor=%23fff" /></a>
-<a href="https://codeclimate.com/github/plank/polyglot/maintainability"><img src="https://img.shields.io/codeclimate/maintainability/plank/snapshots?color=%23528cff&label=maintainablility&logo=code-climate&logoColor=%23fff" /></a>
+<a href="https://github.com/plank/polyglot/actions?query=workflow%3Arun-tests"><img src="https://img.shields.io/github/actions/workflow/status/plank/polyglot/run-tests.yml?branch=main&&color=%23bfc9bd&label=run-tests&logo=github&logoColor=%23fff" alt="GitHub Workflow Tests Status"></a>
+<a href="https://codeclimate.com/github/plank/polyglot/test_coverage"><img src="https://img.shields.io/codeclimate/coverage/plank/polyglot?color=%23ff9376&label=test%20coverage&logo=code-climate&logoColor=%23fff" /></a>
+<a href="https://codeclimate.com/github/plank/polyglot/maintainability"><img src="https://img.shields.io/codeclimate/maintainability/plank/polyglot?color=%23528cff&label=maintainablility&logo=code-climate&logoColor=%23fff" /></a>
 </p>
 
 # Laravel Polyglot
@@ -68,16 +68,15 @@ If you simply need to translate a piece of text, this package provides a few con
         'translators' => [
             'stack' => [
                 'driver' => 'stack',
-                'translators' => ['amazon', 'google', 'gpt35'],
+                'translators' => ['amazon', 'google', 'gpt'],
                 'retries' => 3,
                 'sleep' => 100,
-                'target' => 'it',
             ],
             ...
         ]
     ```
     ```php
-    > Polyglot::translator('stack')->from('auto')->translate('Hello!');
+    > Polyglot::translator('stack')->from('auto')->to('it')->translate('Hello!');
     = "Ciao!"
     ```
 
@@ -85,7 +84,7 @@ If you simply need to translate a piece of text, this package provides a few con
 
 - `Translator::translateBatch` - Translate an array of strings, set target language with `to` method
 - `Translator::translateBatchTo` - Translate an array of strings to a specific language
-- `AbstractTranslator::to`, `from`, `format`, `setSource`, `setTarget`, `setFormat` - Fluent API for setting translator options
+- `AbstractTranslator::to`, `from`, `format` - Fluent API for setting translator options
 - `AbstractTranslator::languages` - Get a list of supported languages, if locale is passed it will return the supported languages for that locale
 - `sendTranslateRequest` - Some drivers allow you to access the underlying response from the translation service
 
@@ -98,7 +97,7 @@ You can extend polyglot and provide your own translator drivers. To do so, follo
 2. Then, in a service provider, call the `Plank\Polyglot\Polyglot::extend` method to register your new driver.
 
     ```php
-    Polyglot::extend('bing', static function (Container $app, array $config) {
+    Polyglot::extend('azure', static function (Container $app, array $config) {
         $key = $config['key'];
 
         return new AzureTranslator($key);
@@ -108,7 +107,7 @@ You can extend polyglot and provide your own translator drivers. To do so, follo
 
     ```php
     return [
-        'default' => env('POLYGLOT_DEFAULT', 'microsoft'),
+        'default' => env('POLYGLOT_DEFAULT', 'bing'),
         'translators' => [
             'microsoft' => [
                 'driver' => 'azure',
@@ -121,7 +120,7 @@ You can extend polyglot and provide your own translator drivers. To do so, follo
 4. And finally use it in your code:
 
     ```php
-    Polyglot::translator('microsoft')->from('en')->to('fr')->translate('Hello!');
+    Polyglot::translator('bing')->from('en')->to('fr')->translate('Hello!');
     ```
 
 ## Testing

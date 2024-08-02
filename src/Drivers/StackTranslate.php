@@ -39,9 +39,9 @@ class StackTranslate extends NestedTranslator
         return $this->tryAllClients(fn (Translator $client) => $client->translateBatch($strings));
     }
 
-    public function translateBatchTo(array $text, string $target, ?string $source = null): array
+    public function translateBatchTo(array $strings, string $target, ?string $source = null): array
     {
-        return $this->tryAllClients(fn (Translator $client) => $client->translateBatchTo($text, $target, $source));
+        return $this->tryAllClients(fn (Translator $client) => $client->translateBatchTo($strings, $target, $source));
     }
 
     protected function tryAllClients($callback): mixed
