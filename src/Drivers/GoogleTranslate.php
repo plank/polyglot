@@ -9,9 +9,12 @@ class GoogleTranslate extends NestedTranslator
 {
     protected Translator $client;
 
-    public function __construct(GoogleV2Translate|GoogleV3Translate $client)
+    protected bool $attribution;
+
+    public function __construct(GoogleV2Translate|GoogleV3Translate $client, bool $attribution = false)
     {
         $this->client = $client;
+        $this->attribution = $attribution;
     }
 
     /**
@@ -26,8 +29,19 @@ class GoogleTranslate extends NestedTranslator
     {
         $output = parent::translate($text);
 
-        if ($this->getFormat() === 'html') {
+        if ($this->attribution && $this->getFormat() === 'html') {
             $output = $this->applyHtmlAttribution($output, $this->getTarget(), $this->getSource());
+        }
+
+        return $output;
+    }
+
+    public function translateTo(string $text, string $target, ?string $source = null): string
+    {
+        $output = parent::translateTo($text, $target, $source);
+
+        if ($this->attribution && $this->getFormat() === 'html') {
+            $output = $this->applyHtmlAttribution($output, $target, $source ?? $this->getSource());
         }
 
         return $output;
@@ -37,9 +51,21 @@ class GoogleTranslate extends NestedTranslator
     {
         $output = parent::translateBatch($strings);
 
-        if ($this->getFormat() === 'html') {
+        if ($this->attribution && $this->getFormat() === 'html') {
             $target = $this->getTarget();
             $source = $this->getSource() ?? 'auto';
+            $output = array_map(fn ($string) => $this->applyHtmlAttribution($string, $target, $source), $output);
+        }
+
+        return $output;
+    }
+
+    public function translateBatchTo(array $strings, string $target, ?string $source = null): array
+    {
+        $output = parent::translateBatchTo($strings, $target, $source);
+
+        if ($this->attribution && $this->getFormat() === 'html') {
+            $source = $source ?? $this->getSource() ?? 'auto';
             $output = array_map(fn ($string) => $this->applyHtmlAttribution($string, $target, $source), $output);
         }
 

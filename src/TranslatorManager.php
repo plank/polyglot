@@ -133,7 +133,7 @@ class TranslatorManager extends Manager implements Translator
             default => throw new ValidationException("Invalid Google Translate Client version $version"),
         };
 
-        return new GoogleTranslate($client);
+        return new GoogleTranslate($client, $config['attribution'] ?? false);
     }
 
     public function createAmazonDriver(array $config): AmazonTranslate
