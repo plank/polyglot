@@ -43,7 +43,7 @@ class GoogleV3Translate extends AbstractTranslator
         return $text;
     }
 
-    public function translateBatch(array $strings): array
+    public function translateBatch(array|string $strings): array
     {
         $response = $this->sendTranslateRequest($strings);
 

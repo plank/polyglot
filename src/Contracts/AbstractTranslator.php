@@ -4,29 +4,38 @@ namespace Plank\Polyglot\Contracts;
 
 abstract class AbstractTranslator implements Translator
 {
+    protected int $limit = 25000;
+
     protected string $format = 'text';
 
     protected string $source = 'auto';
 
     protected string $target;
 
-    abstract public function translate(string $string): string;
+    abstract public function translate(string $text): string;
 
-    public function translateTo(string $string, string $target, ?string $source = null): string
+    public function translateTo(string $text, string $target, ?string $source = null): string
     {
         if ($source !== null) {
             $this->from($source);
         }
 
-        return $this->to($target)->translate($string);
+        return $this->to($target)->translate($text);
     }
 
-    public function translateBatch(array $strings): array
+    public function translateBatch(array|string $strings): array
     {
+        if (is_string($strings)) {
+            $strings = match ($this->format) {
+                'html' => html_split($strings, $this->limit),
+                default => str_split($strings, $this->limit),
+            };
+        }
+
         return array_map(fn ($string) => $this->translate($string), $strings);
     }
 
-    public function translateBatchTo(array $strings, string $target, ?string $source = null): array
+    public function translateBatchTo(array|string $strings, string $target, ?string $source = null): array
     {
         if ($source !== null) {
             $this->from($source);

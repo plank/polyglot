@@ -9,6 +9,8 @@ use Plank\Polyglot\Exceptions\ValidationException;
 
 class AmazonTranslate extends AbstractTranslator
 {
+    protected int $limit = 10000;
+
     protected TranslateClient $client;
 
     public function __construct(array $credentials, string $region, string $version = 'latest', string $format = 'html')
@@ -24,10 +26,8 @@ class AmazonTranslate extends AbstractTranslator
 
     public function translate(string $text): string
     {
-        if (strlen($text) > 10000) {
-            $strings = str_split($text, 10000);
-
-            return implode('', $this->translateBatch($strings));
+        if (strlen($text) > $this->limit) {
+            return implode('', $this->translateBatch($text));
         }
 
         $response = $this->sendTranslateRequest($text, [
@@ -36,15 +36,6 @@ class AmazonTranslate extends AbstractTranslator
         ]);
 
         return $response['TranslatedText'];
-    }
-
-    public function translateBatch(array $strings): array
-    {
-        foreach ($strings as $key => $text) {
-            $strings[$key] = $this->translate($text);
-        }
-
-        return $strings;
     }
 
     public function sendTranslateRequest(string $text, array $options): Result
@@ -59,9 +50,7 @@ class AmazonTranslate extends AbstractTranslator
 
         $options['Text'] = $text;
 
-        $response = $this->client->translateText($options);
-
-        return $response;
+        return $this->client->translateText($options);
     }
 
     public function languages($target = null): array
