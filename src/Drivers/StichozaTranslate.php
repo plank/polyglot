@@ -2,7 +2,6 @@
 
 namespace Plank\Polyglot\Drivers;
 
-use GuzzleHttp\Client;
 use Plank\Polyglot\Contracts\AbstractTranslator;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
