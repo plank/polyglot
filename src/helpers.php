@@ -16,14 +16,18 @@ if (! function_exists('html_split')) {
 
         $chunks = [];
         $lastSplit = 0;
-        $lastTagPos = 0;
+        $lastPosition = 0;
         foreach ($endTags as $tag) {
-            $tagPos = $tag[1] + strlen($tag[0]);
-            if ($tagPos - $lastSplit > $maxLength) {
-                $chunks[] = substr($html, $lastSplit, $lastTagPos - $lastSplit);
-                $lastSplit = $lastTagPos;
+            $position = $tag[1] + strlen($tag[0]);
+            $currentSize = $position - $lastSplit;
+            $lastSize = $lastPosition - $lastSplit;
+
+            // If adding this tag exceeds maxLength and lastSize is between 0 and maxLength, split here
+            if ($currentSize > $maxLength && $lastSize > 0 && $lastSize < $maxLength) {
+                $chunks[] = substr($html, $lastSplit, $lastSize);
+                $lastSplit = $lastPosition;
             }
-            $lastTagPos = $tagPos;
+            $lastPosition = $position;
         }
 
         // Add the remaining part
