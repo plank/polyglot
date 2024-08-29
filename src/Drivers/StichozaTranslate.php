@@ -2,12 +2,13 @@
 
 namespace Plank\Polyglot\Drivers;
 
-use GuzzleHttp\Client;
 use Plank\Polyglot\Contracts\AbstractTranslator;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class StichozaTranslate extends AbstractTranslator
 {
+    protected int $limit = 15000;
+
     protected GoogleTranslate $client;
 
     public function __construct()
@@ -17,10 +18,8 @@ class StichozaTranslate extends AbstractTranslator
 
     public function translate(string $text): string
     {
-        if (strlen($text) > 15000) {
-            $strings = str_split($text, 15000);
-
-            return implode('', $this->translateBatch($strings));
+        if (strlen($text) > $this->limit) {
+            return implode('', $this->translateBatch($text));
         }
 
         return $this->client->setSource($this->source)->setTarget($this->target)->translate($text);

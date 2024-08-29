@@ -9,6 +9,8 @@ use Plank\Polyglot\Exceptions\ValidationException;
 
 class AmazonTranslate extends AbstractTranslator
 {
+    protected int $limit = 10000;
+
     protected TranslateClient $client;
 
     public function __construct(array $credentials, string $region, string $version = 'latest', string $format = 'html')
@@ -24,27 +26,29 @@ class AmazonTranslate extends AbstractTranslator
 
     public function translate(string $text): string
     {
-        if (strlen($text) > 10000) {
-            $strings = str_split($text, 10000);
-
-            return implode('', $this->translateBatch($strings));
+        $limit = $this->limit;
+        $format = $this->format;
+        if ($this->format === 'html' && $text === strip_tags($text)) {
+            $this->format = 'text';
         }
 
-        $response = $this->sendTranslateRequest($text, [
-            'TargetLanguageCode' => $this->target,
-            'SourceLanguageCode' => $this->source,
-        ]);
+        $this->limit = $this->format === 'text' ? 10000 : 102400;
 
-        return $response['TranslatedText'];
-    }
-
-    public function translateBatch(array $strings): array
-    {
-        foreach ($strings as $key => $text) {
-            $strings[$key] = $this->translate($text);
+        $options = ['TargetLanguageCode' => $this->target, 'SourceLanguageCode' => $this->source];
+        if (strlen($text) > $this->limit) {
+            $this->format = $format;
+            $response = ['TranslatedText' => implode('', $this->translateBatch($text))];
+        } elseif ($this->format !== 'text') {
+            $options['Document'] = ['ContentType' => ($this->format === 'html' ? 'text/html' : 'text/plain')];
+            $response = $this->sendTranslateDocumentRequest($text, $options);
+        } else {
+            $response = $this->sendTranslateRequest($text, $options);
         }
 
-        return $strings;
+        $this->limit = $limit;
+        $this->format = $format;
+
+        return $response['TranslatedText'] ?? $response['TranslatedDocument']['Content'];
     }
 
     public function sendTranslateRequest(string $text, array $options): Result
@@ -59,9 +63,26 @@ class AmazonTranslate extends AbstractTranslator
 
         $options['Text'] = $text;
 
-        $response = $this->client->translateText($options);
+        return $this->client->translateText($options);
+    }
 
-        return $response;
+    public function sendTranslateDocumentRequest(string $content, array $options): Result
+    {
+        if (empty($options['SourceLanguageCode'])) {
+            $options['SourceLanguageCode'] = 'auto';
+        }
+
+        if (empty($options['TargetLanguageCode'])) {
+            throw new ValidationException('Amazon document translation requires target locale.');
+        }
+
+        if (! is_array($options['Document']) || empty($options['Document']['ContentType'])) {
+            throw new ValidationException('Amazon document translation requires a Document with ContentType.');
+        }
+
+        $options['Document']['Content'] = $content;
+
+        return $this->client->translateDocument($options);
     }
 
     public function languages($target = null): array

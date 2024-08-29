@@ -23,12 +23,12 @@ abstract class NestedTranslator implements Translator
         return $this->client->translateTo($text, $target, $source);
     }
 
-    public function translateBatch(array $strings): array
+    public function translateBatch(array|string $strings): array
     {
         return $this->client->translateBatch($strings);
     }
 
-    public function translateBatchTo(array $strings, string $target, ?string $source = null): array
+    public function translateBatchTo(array|string $strings, string $target, ?string $source = null): array
     {
         return $this->client->translateBatchTo($strings, $target, $source);
     }

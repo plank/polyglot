@@ -109,7 +109,7 @@ You can extend polyglot and provide your own translator drivers. To do so, follo
     return [
         'default' => env('POLYGLOT_DEFAULT', 'bing'),
         'translators' => [
-            'microsoft' => [
+            'bing' => [
                 'driver' => 'azure',
                 'key' => env('BING_TRANSLATE_API_KEY'),
             ],

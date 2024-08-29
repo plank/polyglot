@@ -38,7 +38,10 @@
     "autoload": {
         "psr-4": {
             "Plank\\Polyglot\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

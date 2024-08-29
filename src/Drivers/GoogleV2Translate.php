@@ -10,6 +10,8 @@ use Plank\Polyglot\Exceptions\ValidationException;
 
 class GoogleV2Translate extends AbstractTranslator
 {
+    protected int $limit = 102400;
+
     protected TranslateClient $client;
 
     protected string $model;
@@ -26,10 +28,8 @@ class GoogleV2Translate extends AbstractTranslator
 
     public function translate(string $text): string
     {
-        if (strlen($text) > 102400) {
-            $strings = str_split($text, 102400);
-
-            return implode('', $this->translateBatch($strings));
+        if (strlen($text) > $this->limit) {
+            return implode('', $this->translateBatch($text));
         }
 
         $response = $this->sendTranslateRequest($text, [
@@ -42,7 +42,7 @@ class GoogleV2Translate extends AbstractTranslator
         return $response['text'];
     }
 
-    public function translateBatch(array $strings): array
+    public function translateBatch(array|string $strings): array
     {
         $response = $this->sendTranslateRequest($strings, [
             'target' => $this->target,

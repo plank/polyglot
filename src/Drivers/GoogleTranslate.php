@@ -47,7 +47,7 @@ class GoogleTranslate extends NestedTranslator
         return $output;
     }
 
-    public function translateBatch(array $strings): array
+    public function translateBatch(array|string $strings): array
     {
         $output = parent::translateBatch($strings);
 
@@ -60,7 +60,7 @@ class GoogleTranslate extends NestedTranslator
         return $output;
     }
 
-    public function translateBatchTo(array $strings, string $target, ?string $source = null): array
+    public function translateBatchTo(array|string $strings, string $target, ?string $source = null): array
     {
         $output = parent::translateBatchTo($strings, $target, $source);
 
